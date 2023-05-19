@@ -58,7 +58,7 @@ python setup.py install
 
 ### pretrianed model
 
-我们采用swin trainsformer Large作为我们的backbone， 采用mask2former作为我们的分类头, 采用dino作为我们的检测头, 下载链接:
+我们采用swin trainsformer Large(224)作为我们的backbone， 采用mask2former作为我们的分类头, 采用dino作为我们的检测头, 下载链接:
 
 https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v )
 
