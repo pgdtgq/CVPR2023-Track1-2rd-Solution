@@ -36,13 +36,10 @@ You can download the data from:,and decompress the data into the 'datasets' fold
 
 ### Pretrained model
 
-We use swin trainsformer Large as our backbone, can be download from:
+We use swin trainsformer Large as our backbone, mask2former as our seg head and Dino as our det head
 
-the pretrained model of seg head:
+All the pretrained model above can be download from: https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v)
 
-the pretrained model of det head:
-
-Put all above into ./pretraind
 
 ### Training
 
@@ -57,3 +54,8 @@ sh scripts/train.sh
 ```bash
 sh scripts/test.sh
 ```
+
+
+### Our best model 
+
+Can be download from: https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v)
