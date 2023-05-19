@@ -16,6 +16,19 @@ Please use python3.7 and cuda11.0.
 pip install -r requirements.txt
 ```
 
+setup paddleseg.
+```bash
+cd /PaddleSeg
+pip install -r requirements.txt
+pip install -v -e .
+```
+
+setup mask2former
+```bash
+cd /PaddleSeg/contrib/PanopticSeg/paddlepanseg/models/ops
+cd ms_deform_attn
+python setup.py install
+```
 ### Data Configuration
 
 After downloading the training and testing data from [official data download address](https://aistudio.baidu.com/aistudio/datasetdetail/203253), decompress the data into the 'datasets' folder (if it does not exist, please create it first)
