@@ -31,7 +31,7 @@ python setup.py install
 ```
 ### Data Configuration
 
-You can download the data from:,and decompress the data into the 'datasets' folder 
+You can download the data from: https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v) ,and decompress the data into the 'datasets' folder 
 
 
 ### Pretrained model

@@ -30,7 +30,7 @@ python setup.py install
 
 ### 数据配置
 
-数据下载地址：
+数据下载地址：https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v)
 
 下载后将数据解压在./datasets文件夹下
 
@@ -81,4 +81,4 @@ sh scripts/test.sh
 
 ### best model
 
-下载地址
+下载地址:https://pan.baidu.com/s/10HDywKyzu6R8q-Lxrpn3pw (J69v)

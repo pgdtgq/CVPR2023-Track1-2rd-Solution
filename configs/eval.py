@@ -35,7 +35,7 @@ print("==========>current path is " + _root)
 seg_num_classes=19
 
 
-trafficsign_number_workers = 4  #
+
 
 dataloader.train=L(MultiTaskDataLoader)(
     cfg=dict(sample_mode='batch',),
@@ -158,7 +158,7 @@ dataloader.train=L(MultiTaskDataLoader)(
                 mosaic_epoch = 0,
             ),
             total_batch_size=8,
-            num_workers=trafficsign_number_workers,
+            num_workers=4,
             batch_transforms=[
                 dict(PadMaskBatch=dict(pad_to_stride=-1, return_pad_mask=True),),
             ],
