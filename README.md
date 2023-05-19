@@ -31,11 +31,40 @@ python setup.py install
 ```
 ### Data Configuration
 
-After downloading the training and testing data from [official data download address](https://aistudio.baidu.com/aistudio/datasetdetail/203253), decompress the data into the 'datasets' folder (if it does not exist, please create it first)
+You can download the data from:,and decompress the data into the 'datasets' folder ,like this:
+
+track1_train_data
+        |_____seg
+        |      |______trainval  
+        |      |______val      
+        |
+        |_____cls
+        |      |______trainval 
+        |
+        |_____det
+               |______trainval 
+
+track2_test_data
+        |
+        |_____cls
+        |      |______test 
+        |
+        |_____det
+               |______test  
+
+
+### Pretrained model
+
+We use swin trainsformer Large as our backbone, can be download from:
+
+the pretrained model of seg head:
+
+the pretrained model of det head:
+
+Put all above into ./pretraind
 
 ### Training
 
-We provide the pre-training weights on the object365 dataset, download the pre-training weights to the 'pretrained' folder (if it does not exist, please create it first), and then use the following script to start training
 
 ```bash
 sh scripts/train.sh
@@ -43,7 +72,6 @@ sh scripts/train.sh
 
 ### Inference
 
-We provide the weights of our three-task AllinOne joint training, which can be downloaded to the 'pretrained' folder (if it does not exist, please create it first), and then use the following script to start inference
 
 ```bash
 sh scripts/test.sh
