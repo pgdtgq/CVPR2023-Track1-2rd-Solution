@@ -40,7 +40,7 @@ dataloader.test = [
             segmentation=L(build_segmentation_trainloader)(
                 data_set=L(build_segementation_test_dataset)(
                         dataset_name="InferDataset",
-                        dataset_root=_root + '/datasets/attack_test_data/seg/', 
+                        dataset_root=_root + '/datasets/track1_test_data/seg/', 
                         transforms=[L(Normalize)()],
                         mode='test',
                         is_padding=True),
@@ -60,7 +60,7 @@ dataloader.test = [
             fgvc=L(build_reid_test_loader_lazy)(
                 test_set=L(build_hierachical_test_set)(
                     dataset_name = "FGVCInferDataset",
-                    test_dataset_dir = _root + '/datasets/attack_test_data/cls/test/',
+                    test_dataset_dir = _root + '/datasets/track1_test_data/cls/test/',
                     transforms=L(build_transforms_lazy)(
                         is_train=False,
                         size_test=[640, 640],
@@ -97,7 +97,7 @@ dataloader.test = [
                     ],
                     image_dir='test.txt',  #数据库已经更改
                     anno_path='test.json',
-                    dataset_dir= _root + '/datasets/attack_test_data/dec/',
+                    dataset_dir= _root + '/datasets/track1_test_data/dec/',
                     data_fields=['image', 'im_id', 'im_file'],
                 ),
                 total_batch_size=16,
