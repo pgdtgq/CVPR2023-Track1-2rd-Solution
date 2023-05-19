@@ -240,7 +240,7 @@ dataloader.test = [
                             ),
                         dict(Permute=dict()),
                     ],
-                    image_dir='test',  #数据库已经更改
+                    image_dir='test', 
                     anno_path='test.json',
                     dataset_dir= _root + '/datasets/track1_test_data/dec/',
                     data_fields=['image', 'gt_bbox', 'gt_class', 'difficult'],
@@ -309,7 +309,7 @@ backbone = L(SwinTransformer)(  #swin large
         depths=[2, 2, 18, 2],
         num_heads=[6, 12, 24, 48],
         window_size=7,
-        pretrained = _root + '/pretrained/swin_large_patch4_window7_224_22kto1k_pretrained.pdparams')
+        pretrained = None)
 
 trafficsign_num_classes=45
 use_focal_loss=True
@@ -321,7 +321,7 @@ model=L(MultiTaskBatchFuse)(
             in_channels= [192,384,768,1536],
             num_classes=seg_num_classes,
             maskformer_num_feature_levels = 4,
-            pretrained = _root + '/pretrained/mask2former.pdparams',
+            pretrained = None,
             loss=L(Mask2FormerLoss)(num_classes = seg_num_classes,
                                     loss_ce = 1.0,  
                                     mask_weight = 3.0,
@@ -353,11 +353,8 @@ model=L(MultiTaskBatchFuse)(
                             num_queries=900,
                             position_embed_type='sine',
                             return_intermediate_dec=True,
-                            #########g改改改改啊
                             backbone_feat_channels=[192, 384,768,1536],  #must match the Vit embed_dim
                             num_levels=5,
-                            # backbone_feat_channels=[384,768,1536],  #must match the Vit embed_dim
-                            # num_levels=4,
                             num_encoder_points=4,
                             num_decoder_points=4,
                             nhead=8,
