@@ -31,26 +31,7 @@ python setup.py install
 ```
 ### Data Configuration
 
-You can download the data from:,and decompress the data into the 'datasets' folder ,like this:
-
-track1_train_data
-        |_____seg
-        |      |______trainval  
-        |      |______val      
-        |
-        |_____cls
-        |      |______trainval 
-        |
-        |_____det
-               |______trainval 
-
-track2_test_data
-        |
-        |_____cls
-        |      |______test 
-        |
-        |_____det
-               |______test  
+You can download the data from:,and decompress the data into the 'datasets' folder 
 
 
 ### Pretrained model

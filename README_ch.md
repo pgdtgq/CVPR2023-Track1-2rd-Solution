@@ -32,26 +32,7 @@ python setup.py install
 
 数据下载地址：
 
-下载后将数据解压在./datasets文件夹下,组织结构如下：
-
-track1_train_data
-        |_____seg
-        |      |______trainval  #我们将train与val共同用作训练数据
-        |      |______val       #将test作为验证集
-        |
-        |_____cls
-        |      |______trainval  #我们将train与val共同用作训练数据
-        |
-        |_____det
-               |______trainval  #我们将train与val共同用作训练数据
-
-track2_test_data
-        |
-        |_____cls
-        |      |______test  #分类的验证数据（源于test）
-        |
-        |_____det
-               |______test   #检测的测试数据（源于test）
+下载后将数据解压在./datasets文件夹下
 
 
 ### pretrianed model
