@@ -10,7 +10,7 @@ Demo is based on 8 A100 cards.
 
 ### Environment
 
-Please use python3.7 and cuda11.0. 
+Please use python3.7 and cuda11.2. 
 
 ```bash
 pip install -r requirements.txt

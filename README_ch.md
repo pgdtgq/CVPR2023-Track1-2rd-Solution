@@ -9,7 +9,7 @@ Demo为单机（8卡）40G A100的训练方法
 
 ### 环境配置
 
-运行环境为python3.7，cuda11.0测试机器为A100。使用pip的安装依赖包，如下：
+运行环境为python3.7，cuda11.2测试机器为A100。使用pip的安装依赖包，如下：
 ```bash
 pip install -r requirements.txt
 ```
