@@ -78,7 +78,7 @@ class BDD100K(Dataset):
             for img_path, label_path in zip(img_files, label_files)
         ]
         
-   def __getitem__(self, idx):
+    def __getitem__(self, idx):
         if self.mosaic_epoch == 0 or self._epoch < self.mosaic_epoch:
             data = []
             n = len(self.file_list)
