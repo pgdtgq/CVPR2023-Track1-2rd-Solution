@@ -1283,8 +1283,8 @@ class Mosaic:
         # input_h, input_w = self.input_dim
         input_w, input_h = self.input_dim
 
-        yc = int(random.uniform(0.5 * input_h, 1.5 * input_h))
-        xc = int(random.uniform(0.5 * input_w, 1.5 * input_w))
+        yc = int(random.uniform(0.75 * input_h, 1.25 * input_h))
+        xc = int(random.uniform(0.75 * input_w, 1.25 * input_w))
         mosaic_img = np.full((input_h * 2, input_w * 2, 3), 114, dtype=np.uint8)
         mosaic_label = np.full((input_h * 2, input_w * 2), 255, dtype=np.uint8)  # 背景是255
         
