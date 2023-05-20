@@ -62,7 +62,7 @@ dataloader.train=L(MultiTaskDataLoader)(
                         L(RandomSelectAug)(
                                 transforms1 = L(RandomDistort)(brightness_range=0.4, contrast_range=0.4, saturation_range=0.4), #随即变换亮度、对比度、饱和度
                                 transforms2 = L(RandomWeather)(), 
-                                p = 0.9  #RandomDistort的概率为0.9
+                                p = 0.95  #RandomDistort的概率为0.95
                         ),
                         L(GenerateInstanceTargets)(num_classes = seg_num_classes),
                         L(Normalize)()],

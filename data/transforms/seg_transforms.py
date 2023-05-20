@@ -1194,8 +1194,8 @@ class RandomWeather:
         self.transform = A.Compose([    
                                 A.OneOf([  #噪声类       
                                         A.RandomRain(drop_length=20, drop_width=1, drop_color=(200, 200, 200),   #drop_width雨的粗细
-                                                blur_value=3, brightness_coefficient=0.9, rain_type=None, always_apply=False, p=1.0), #增加雨
-                                        A.RandomFog(fog_coef_lower=0.1, fog_coef_upper=0.25, alpha_coef=0.25, always_apply=False, p=1.0)  #随机增加雾
+                                                blur_value=3, brightness_coefficient=0.9, rain_type=None, always_apply=False, p=0.4), #增加雨
+                                        A.RandomFog(fog_coef_lower=0.1, fog_coef_upper=0.25, alpha_coef=0.25, always_apply=False, p=0.6)  #随机增加雾
                                 ]),
                             ],p = 1.0)
     def __call__(self, data):
