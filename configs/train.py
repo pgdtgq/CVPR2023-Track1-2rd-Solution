@@ -7,7 +7,7 @@ from data.build import MultiTaskDataLoader
 from modeling.meta_arch.multitask_v2 import MultiTaskBatchFuse
 
 # segmentation
-from data.transforms.seg_transforms import ResizeStepScaling, RandomPaddingCrop, \
+from data.transforms.seg_transforms import ResizeStepScaling, RandomPaddingCrop, Mosaic, \
     RandomHorizontalFlip, RandomDistort, Normalize,GenerateInstanceTargets, One_of_aug,RandomSelectAug,RandomWeather
 from data.build_segmentation import build_segmentation_dataset, build_segmentation_trainloader, \
     build_segementation_test_dataset
@@ -45,6 +45,7 @@ dataloader.train=L(MultiTaskDataLoader)(
                     dataset_name="BDD100K",
                     dataset_root=_root + '/datasets/track1_train_data/seg/',   #分割数据集路径
                     transforms=[
+                        L(Mosaic)(p = 0.1),
                         L(ResizeStepScaling)(min_scale_factor=0.5, max_scale_factor=2.0, scale_step_size=0.2),  
                         L(RandomPaddingCrop)(crop_size=[1280, 720]), 
                         L(RandomHorizontalFlip)(), 
@@ -66,7 +67,8 @@ dataloader.train=L(MultiTaskDataLoader)(
                         ),
                         L(GenerateInstanceTargets)(num_classes = seg_num_classes),
                         L(Normalize)()],
-                    mode='train'),
+                    mode='train',
+                    mosaic_epoch = 0),
             total_batch_size=16, 
             worker_num=4, 
             drop_last=True, 

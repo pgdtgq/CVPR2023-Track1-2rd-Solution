@@ -20,6 +20,12 @@ import cv2
 import numpy as np
 from PIL import Image
 
+try:
+    from collections.abc import Sequence
+except Exception:
+    from collections import Sequence
+
+    
 from paddleseg.transforms import functional
 from paddleseg.utils import logger
 import albumentations as A
@@ -47,21 +53,13 @@ class Compose:
         self.to_rgb = to_rgb
         self.img_channels = img_channels
         self.read_flag = cv2.IMREAD_GRAYSCALE if img_channels == 1 else cv2.IMREAD_COLOR
-
-    def __call__(self, data):
-        """
-        Args:
-            data: A dict to deal with. It may include keys: 'image', 'label', 'trans_info' and 'gt_fields'.
-                'trans_info' reserve the image shape informating. And the 'gt_fields' save the key need to transforms
-                together with 'image'
-
-        Returns: A dict after process。
-        """
+    
+    def prepare_data(self, data):
         if 'image' not in data.keys():
-            raise ValueError("`data` must include `img` key.")
+                raise ValueError("`data` must include `img` key.")
         if isinstance(data['image'], str):
             data['image'] = cv2.imread(data['image'],
-                                     self.read_flag).astype('float32')
+                                    self.read_flag).astype('float32')
         if data['image'] is None:
             raise ValueError('Can\'t read The image file {}!'.format(data[
                 'image']))
@@ -82,10 +80,26 @@ class Compose:
         # the `trans_info` will save the process of image shape, and will be used in evaluation and prediction.
         if 'trans_info' not in data.keys():
             data['trans_info'] = []
+        return data
+    
+    def __call__(self, data):
+        """
+        Args:
+            data: A dict to deal with. It may include keys: 'image', 'label', 'trans_info' and 'gt_fields'.
+                'trans_info' reserve the image shape informating. And the 'gt_fields' save the key need to transforms
+                together with 'image'
 
+        Returns: A dict after process。
+        """
+        # 判断是否需要mosaic
+        if not isinstance(data, Sequence):
+            data = self.prepare_data(data)
+        else: #mosaic
+            for i in range(len(data)):
+                data[i] = self.prepare_data(data[i])            
+ 
         for op in self.transforms:
             data = op(data)
-            
 
         if data['image'].ndim == 2:
             data['image'] = data['image'][..., np.newaxis]
@@ -1220,3 +1234,84 @@ class RandomSelectAug:
 
 
 
+class Mosaic:
+    def __init__(self, prob=1.0, start_decrease_iter = 40000, decrease_iter = 10000, input_dim=[640, 640]):
+        self.prob = prob
+        self.input_dim = input_dim
+        self.start_decrease_iter = start_decrease_iter
+        self.decrease_iter = decrease_iter
+        print('=================>分割马赛克')
+    
+    def get_mosaic_coords(self, mosaic_idx, xc, yc, w, h, input_h, input_w):
+        # (x1, y1, x2, y2) means coords in large image,
+        # small_coords means coords in small image in mosaic aug.
+        if mosaic_idx == 0:
+            # top left
+            x1, y1, x2, y2 = max(xc - w, 0), max(yc - h, 0), xc, yc
+            small_coords = w - (x2 - x1), h - (y2 - y1), w, h
+        elif mosaic_idx == 1:
+            # top right
+            x1, y1, x2, y2 = xc, max(yc - h, 0), min(xc + w, input_w * 2), yc
+            small_coords = 0, h - (y2 - y1), min(w, x2 - x1), h
+        elif mosaic_idx == 2:
+            # bottom left
+            x1, y1, x2, y2 = max(xc - w, 0), yc, xc, min(input_h * 2, yc + h)
+            small_coords = w - (x2 - x1), 0, w, min(y2 - y1, h)
+        elif mosaic_idx == 3:
+            # bottom right
+            x1, y1, x2, y2 = xc, yc, min(xc + w, input_w * 2), min(input_h * 2,
+                                                                   yc + h)
+            small_coords = 0, 0, min(w, x2 - x1), min(y2 - y1, h)
+
+        return (x1, y1, x2, y2), small_coords
+        
+    def __call__(self, data):
+        if not isinstance(data, Sequence):  
+            return data
+        assert len(data) == 4, "Mosaic needs 4 samples"
+        
+        # current_iter = data[0]['curr_iter']
+        # if current_iter < self.start_decrease_iter:
+        #     prob = self.prob
+        # elif current_iter > (self.start_decrease_iter + self.decrease_iter):
+        #     return data[0]
+        # else:
+        #     prob = max(0,self.prob - self.prob * (current_iter-self.start_decrease_iter) / self.decrease_iter)  #逐渐衰减 
+        if np.random.uniform(0., 1.) > self.prob:
+            return data[0]
+        
+        # input_h, input_w = self.input_dim
+        input_w, input_h = self.input_dim
+
+        yc = int(random.uniform(0.5 * input_h, 1.5 * input_h))
+        xc = int(random.uniform(0.5 * input_w, 1.5 * input_w))
+        mosaic_img = np.full((input_h * 2, input_w * 2, 3), 114, dtype=np.uint8)
+        mosaic_label = np.full((input_h * 2, input_w * 2), 255, dtype=np.uint8)  # 背景是255
+        
+        for mosaic_idx, sp in enumerate(data):
+            img = sp['image']
+            label = sp['label']
+            h0, w0 = img.shape[:2]
+            scale = min(1. * input_h / h0, 1. * input_w / w0)
+            img = cv2.resize(
+                img, (int(w0 * scale), int(h0 * scale)),
+                interpolation=cv2.INTER_LINEAR)
+            label = cv2.resize(label, (int(w0 * scale), int(h0 * scale)),
+                interpolation=cv2.INTER_NEAREST)
+            (h, w, c) = img.shape[:3]
+
+            # suffix l means large image, while s means small image in mosaic aug.
+            (l_x1, l_y1, l_x2, l_y2), (
+                s_x1, s_y1, s_x2, s_y2) = self.get_mosaic_coords(
+                    mosaic_idx, xc, yc, w, h, input_h, input_w)
+
+            mosaic_img[l_y1:l_y2, l_x1:l_x2] = img[s_y1:s_y2, s_x1:s_x2]
+            mosaic_label[l_y1:l_y2, l_x1:l_x2] = label[s_y1:s_y2, s_x1:s_x2]
+        
+        data0 = data[0]
+        data0['image'] = mosaic_img.astype(np.uint8)
+        data0['label'] = mosaic_label.astype(np.uint8)
+
+        # cv2.imwrite('1111.png',data0['image'] )
+
+        return data0

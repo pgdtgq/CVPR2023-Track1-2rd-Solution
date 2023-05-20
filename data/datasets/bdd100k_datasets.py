@@ -75,7 +75,60 @@ class BDD100K(Dataset):
             for img_path, label_path in zip(img_files, label_files)
         ]
         
+   def __getitem__(self, idx):
+        if self.mosaic_epoch == 0 or self._epoch < self.mosaic_epoch:
+            data = []
+            n = len(self.file_list)
+            for i in range(4):
+                if i == 0:
+                    index = idx
+                else:
+                    index = np.random.randint(n)
+                cur_data = {}
+                cur_data['trans_info'] = []
+                cur_data['curr_iter'] = self._curr_iter
+                image_path, label_path = self.file_list[index]
+                cur_data['image'] = image_path
+                cur_data['image_path'] = image_path
+                cur_data['label'] = label_path
+                cur_data['gt_fields'] = ['label']
+                data.append(cur_data)  # 随机抽取4个图片
+            data = self.transforms(data)
+            if self.edge:
+                edge_mask = F.mask_to_binary_edge(
+                    data['label'], radius=2, num_classes=self.num_classes)
+                cur_data['edge'] = edge_mask
+        else:
+            data = {}
+            data['trans_info'] = []
+            data['curr_iter'] = self._curr_iter
+            image_path, label_path = self.file_list[idx]
+            data['image'] = image_path
+            data['image_path'] = image_path
+            data['label'] = label_path
+            data['gt_fields'] = []
+            if self.mode == 'val':
+                data = self.transforms(data)
+                data['label'] = data['label'][np.newaxis, :, :]
 
+            else:
+                data['gt_fields'].append('label')
+                data = self.transforms(data)
+                if self.edge:
+                    edge_mask = F.mask_to_binary_edge(
+                        data['label'], radius=2, num_classes=self.num_classes)
+                    data['edge'] = edge_mask
+        self._curr_iter += 1
+        return data
+
+    
+    def __len__(self):
+        return len(self.file_list)
+    
+    def set_epoch(self, epoch_id):
+        self._epoch = epoch_id  
+        
+        
 @DATASET_REGISTRY.register()
 class InferDataset(Dataset):
     """
