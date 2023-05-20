@@ -37,7 +37,7 @@ class BDD100K(Dataset):
     NUM_CLASSES = 19
     dataset_name = 'BDD100K'
     
-    def __init__(self, transforms, dataset_root, mode='train', edge=False):
+    def __init__(self, transforms, dataset_root, mode='train', edge=False, mosaic_epoch=-1):
         self.dataset_root = dataset_root
         self.transforms = Compose(transforms)
         self.file_list = list()
@@ -46,6 +46,9 @@ class BDD100K(Dataset):
         # self.num_classes = self.NUM_CLASSES
         self.ignore_index = 255
         self.edge = edge
+        self._epoch = 0
+        self._curr_iter = 0
+        self.mosaic_epoch = mosaic_epoch
 
         if mode not in ['train', 'val', 'test']:
             raise ValueError(
