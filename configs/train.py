@@ -45,7 +45,7 @@ dataloader.train=L(MultiTaskDataLoader)(
                     dataset_name="BDD100K",
                     dataset_root=_root + '/datasets/track1_train_data/seg/',   #分割数据集路径
                     transforms=[
-                        L(Mosaic)(prob = 0.1,  input_dim=[1280, 720]),
+                        L(Mosaic)(prob = 0.15,  input_dim=[1280, 720]),
                         L(ResizeStepScaling)(min_scale_factor=0.5, max_scale_factor=2.0, scale_step_size=0.2),  
                         L(RandomPaddingCrop)(crop_size=[1280, 720]), 
                         L(RandomHorizontalFlip)(), 
@@ -68,7 +68,8 @@ dataloader.train=L(MultiTaskDataLoader)(
                         L(GenerateInstanceTargets)(num_classes = seg_num_classes),
                         L(Normalize)()],
                     mode='train',
-                    mosaic_epoch = 0),
+                    mosaic_epoch = 0,  #开启马赛克
+                    stop_iter = 25000),  #m马赛克停止的iter
             total_batch_size=16, 
             worker_num=4, 
             drop_last=True, 

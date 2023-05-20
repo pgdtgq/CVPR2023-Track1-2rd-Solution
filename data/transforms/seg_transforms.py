@@ -1235,11 +1235,9 @@ class RandomSelectAug:
 
 
 class Mosaic:
-    def __init__(self, prob=1.0, start_decrease_iter = 40000, decrease_iter = 10000, input_dim=[640, 640]):
+    def __init__(self, prob=1.0, input_dim=[640, 640]):
         self.prob = prob
         self.input_dim = input_dim
-        self.start_decrease_iter = start_decrease_iter
-        self.decrease_iter = decrease_iter
         print('=================>分割马赛克')
     
     def get_mosaic_coords(self, mosaic_idx, xc, yc, w, h, input_h, input_w):

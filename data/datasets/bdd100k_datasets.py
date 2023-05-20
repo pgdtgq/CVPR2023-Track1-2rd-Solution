@@ -37,7 +37,10 @@ class BDD100K(Dataset):
     NUM_CLASSES = 19
     dataset_name = 'BDD100K'
     
-    def __init__(self, transforms, dataset_root, mode='train', edge=False, mosaic_epoch=-1):
+    def __init__(self, transforms, dataset_root, mode='train', edge=False, 
+                mosaic_epoch=-1,
+                stop_iter = float('inf'),   #停止马赛克的iter 默认一直开启
+                worker_num = 3.6):
         self.dataset_root = dataset_root
         self.transforms = Compose(transforms)
         self.file_list = list()
@@ -49,6 +52,8 @@ class BDD100K(Dataset):
         self._epoch = 0
         self._curr_iter = 0
         self.mosaic_epoch = mosaic_epoch
+        self.worker_num = worker_num
+        self.stop_iter = stop_iter
 
         if mode not in ['train', 'val', 'test']:
             raise ValueError(
@@ -79,7 +84,8 @@ class BDD100K(Dataset):
         ]
         
     def __getitem__(self, idx):
-        if self.mosaic_epoch == 0 or self._epoch < self.mosaic_epoch:
+        current_iter = int(self._curr_iter * self.worker_num)  #当前的iter
+        if self.mosaic_epoch == 0 and current_iter < self.stop_iter:
             data = []
             n = len(self.file_list)
             for i in range(4):
