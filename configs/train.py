@@ -45,7 +45,7 @@ dataloader.train=L(MultiTaskDataLoader)(
                     dataset_name="BDD100K",
                     dataset_root=_root + '/datasets/track1_train_data/seg/',   #分割数据集路径
                     transforms=[
-                        L(Mosaic)(prob = 0.15,  input_dim=[1280, 720]),
+                        L(Mosaic)(prob = 0.2,  input_dim=[1280, 720]),
                         L(ResizeStepScaling)(min_scale_factor=0.5, max_scale_factor=2.0, scale_step_size=0.2),  
                         L(RandomPaddingCrop)(crop_size=[1280, 720]), 
                         L(RandomHorizontalFlip)(), 
